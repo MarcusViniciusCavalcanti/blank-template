@@ -1,0 +1,7 @@
+@import "~src/style/all";
+
+$app-enabled-themes: (dark);
+
+@include app-install() {
+  @include app-theme-global;
+}

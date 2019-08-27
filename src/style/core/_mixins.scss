@@ -1,0 +1,65 @@
+
+@mixin app-scrollbars($fg, $bg, $size, $border-radius: $size / 2) {
+  ::-webkit-scrollbar {
+    width: $size;
+    height: $size;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: $fg;
+    cursor: pointer;
+    border-radius: $border-radius;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: $bg;
+  }
+}
+
+@mixin app-headings($from: 1, $to: 6) {
+  @for $i from $from through $to {
+    h#{$i} {
+      margin: 0;
+    }
+  }
+}
+
+@mixin hover-focus-active {
+  &:focus,
+  &:active,
+  &:hover {
+    @content;
+  }
+}
+
+@mixin install-thumb() {
+  $thumb-selectors: (
+    '::-webkit-slider-thumb'
+    '::-moz-range-thumb'
+    '::-ms-thumb'
+  );
+
+  @each $selector in $thumb-selectors {
+    &#{$selector} {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      @content;
+    }
+  }
+}
+
+@mixin install-track() {
+  $thumb-selectors: (
+    '::-webkit-slider-runnable-track'
+    '::-moz-range-track'
+    '::-ms-track'
+  );
+
+  @each $selector in $thumb-selectors {
+    &#{$selector} {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      @content;
+    }
+  }
+}

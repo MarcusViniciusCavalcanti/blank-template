@@ -1,0 +1,6 @@
+@import "global/overrides";
+@import "global/styles";
+
+@mixin app-theme-global() {
+  @include app-theme-overrides();
+}

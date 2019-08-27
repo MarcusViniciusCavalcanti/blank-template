@@ -1,0 +1,52 @@
+@function app-deep-find-value($theme, $key, $value) {
+  $parent-value: map-get($theme, $value);
+
+  @if($parent-value != null) {
+    @return app-deep-find-value($theme, $value, $parent-value);
+  }
+
+  @return $value;
+}
+
+@function app-process-theme($theme) {
+  $processed-theme: ();
+
+  @each $key, $value in $theme {
+    $processed-theme: map-set($processed-theme, $key, app-deep-find-value($theme, $key, $value));
+  }
+
+  @return $processed-theme;
+}
+
+@function get-current-theme-name() {
+  @if ($app-theme-name != null) {
+    @return $app-theme-name;
+  }
+
+  @return get-last-enabled-theme();
+}
+
+@function app-theme($key) {
+  $value: ();
+
+  @if ($app-enable-css-custom-properties == true) {
+    $value: var(--#{$key});
+  } @else {
+    @if ($app-theme-process-mode == 'pre-process') {
+      $value: map-get($nb-processed-theme, $key);
+    }
+
+    @if ($app-theme-proccess-mode == 'lazy-process') {
+      $app-theme-name: get-current-theme-name();
+
+      $theme: app-get-registered-theme($app-theme-name);
+      $value: app-deep-find-value($theme, $key, map-get($theme, $key));
+    }
+  }
+
+  @if ($value == null) {
+    @warn 'Error template: não foi possível encontrar a chave `' + $key + '` para este tema `'+ $app-theme-name +'`';
+  }
+
+  @return $value;
+}

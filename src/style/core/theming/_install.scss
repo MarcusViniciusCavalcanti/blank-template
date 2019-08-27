@@ -1,0 +1,112 @@
+@mixin app-for-theme($name) {
+  @if($app-theme-name == $name) {
+    @content
+  }
+}
+
+@mixin app-for-themes($names...) {
+  @each $name in $names {
+    @include app-for-theme($name) {
+      @content;
+    }
+  }
+}
+
+@mixin app-except-theme($name) {
+  @if($app-theme-name != $name) {
+    @content;
+  }
+}
+
+@mixin app-except-for-themes($names...) {
+  @each $name in $names {
+    @include app-except-theme($name) {
+      @content
+    }
+  }
+}
+
+@mixin app-install-css-properties($theme-name, $theme) {
+  .app-theme-#{$theme-name} {
+    @each $var, $value in $theme {
+      @if(type-of($value) == 'string' and map-get($theme, $value)) {
+        --#{$var}: var(--#{$value});
+      } @else {
+        --#{$var}: #{$value}
+      }
+    }
+  }
+}
+
+@mixin app-pre-process-context($theme-name) {
+  $app-theme-process-mode: 'pre-process' !global;
+
+  $app-theme-name: $theme-name !global;
+  $app-processed-theme: app-process-theme((app-get-registered-theme($theme-name))) !global;
+}
+
+@mixin app-lazy-process-context($theme-name) {
+  $app-theme-process-mode: 'lazy-process' !global;
+
+  $app-theme-name: $theme-name !global;
+  $app-processed-theme: () !global;
+}
+
+@mixin app-install-component-with-css-props() {
+  :host {
+    @content;
+  }
+}
+
+@mixin app-install-component-with-scss-vars() {
+  $enabled-themes: app-get-enabled-themes();
+
+  @each $theme-name in $enabled-themes {
+    @include app-lazy-process-context($theme-name);
+    .app-theme-#{$theme-name} :host {
+      @content;
+    }
+  }
+}
+
+@mixin app-install-component() {
+  @if($app-enable-css-custom-properties) {
+    @include app-install-component-with-css-props() {
+      @content;
+    }
+  } @else {
+    @include app-install-component-with-scss-vars() {
+      @content;
+    }
+  }
+}
+
+@mixin app-install-global-with-css-props() {
+  @content;
+
+  @each $theme-name in app-get-enabled-themes() {
+    @include app-install-css-properties($theme-name, app-get-registered-theme($theme-name));
+  }
+}
+
+@mixin app-install-global-with-scss-vars() {
+  @each $theme-name in app-get-enabled-themes() {
+    @include app-pre-process-context($theme-name);
+
+    .app-theme-#{$theme-name} {
+      @content;
+    }
+  }
+}
+
+@mixin app-install() {
+  @if($app-enable-css-custom-properties) {
+    @include app-install-global-with-css-props() {
+      @content;
+    }
+  } @else {
+    @include app-install-global-with-scss-vars() {
+      @content;
+    }
+  }
+}

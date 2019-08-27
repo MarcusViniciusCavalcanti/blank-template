@@ -1,0 +1,64 @@
+
+@import "~src/style/themes/mapping";
+
+@function app-get-enabled-themes() {
+
+  @if(length($app-enabled-themes) == 0) {
+    @each $theme-name, $theme in $app-themes {
+      $app-enabled-themes: append($app-enabled-themes, $theme-name) !global;
+    }
+  }
+
+  @return $app-enabled-themes;
+}
+
+@function get-last-enabled-theme() {
+  $themes: app-get-enabled-themes();
+
+  @return nth($themes, length($themes));
+}
+
+@function app-set-for-export($theme, $name, $parent-name: null) {
+  $parent-theme: map-get($app-themes-export, $parent-name);
+
+  @if($parent-theme != null) {
+    $theme: map-merge(map-get($parent-theme, data), $theme);
+  }
+
+  $theme-data: (data: $theme, parent: $parent-name);
+
+  @return map-set($app-theme-export, $name, $theme-data);
+}
+
+@function app-get-registered-theme($name) {
+  $theme: map-get($app-themes, $name);
+
+  @if($theme == null) {
+    @error 'Error template: o tema `' + $name + '` não foi registrado na função `app-register-theme`'
+  }
+
+  @return $theme;
+}
+
+@function app-register-theme($theme, $name, $parent-name: null) {
+  @if($app-theme-export-mode == true) {
+    $app-themes-export: app-set-for-export($theme, $name, $parent-name) !global;
+  }
+
+  $theme-data: ();
+
+  @if($parent-name != null) {
+    $parent-theme: map-get($app-theme, $parent-name);
+
+    @if($parent-theme == null) {
+      @error 'Error template: o tema parent `' + $parent-name + '` não está registrado ou importado.';
+    }
+
+    $theme: map-merge($parent-theme, $theme);
+  }
+
+  $theme: map-merge($eva-mapping, $theme);
+  $app-themes: map-set($app-themes, $name, $theme) !global;
+
+  @return $app-themes;
+}

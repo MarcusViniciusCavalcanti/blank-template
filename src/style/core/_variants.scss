@@ -1,0 +1,12 @@
+
+@function app-get-statuses() {
+  @return 'primary', 'success', 'warning', 'danger', 'info';
+}
+
+@function app-get-sizes() {
+  @return 'tiny', 'small', 'medium', 'large', 'giant';
+}
+
+@function app-get-shapes() {
+  @return 'rectangle', 'semi-round', 'round';
+}
