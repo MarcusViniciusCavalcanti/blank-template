@@ -7,9 +7,11 @@ plugins:
 
 exclude_patterns:
   - "node_modules/"
+  - "dist/"
   - "e2e/"
-  - "**/spec/"
-  - "**/test/"
+  - "**/*.spec.ts"
+  - "**/*test.ts"
+  - "src/polyfills.ts"
   - "coverage/"
   - ".idea/"
   - "karma.conf.js"
