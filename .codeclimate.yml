@@ -1,4 +1,18 @@
+version: "2"         # required to adjust maintainability checks
+
 plugins:
   tslint:
     enabled: true
     config: tslint.json
+
+exclude_patterns:
+  - "node_modules/"
+  - "e2e/"
+  - "**/spec/"
+  - "**/test/"
+  - "coverage/"
+  - ".idea/"
+  - "karma.conf.js"
+  - "angular.json"
+  - "blank-template.iml"
+  - "src/style/"
