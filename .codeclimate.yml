@@ -1,0 +1,20 @@
+version: "2"         # required to adjust maintainability checks
+
+plugins:
+  tslint:
+    enabled: true
+    config: tslint.json
+
+exclude_patterns:
+  - "node_modules/"
+  - "dist/"
+  - "e2e/"
+  - "**/*.spec.ts"
+  - "**/*test.ts"
+  - "src/polyfills.ts"
+  - "coverage/"
+  - ".idea/"
+  - "karma.conf.js"
+  - "angular.json"
+  - "blank-template.iml"
+  - "src/style/"
